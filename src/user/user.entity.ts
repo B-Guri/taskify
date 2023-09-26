@@ -1,5 +1,14 @@
 import { Exclude } from 'class-transformer';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { CommentEntity } from 'src/comment/comment.entity';
+import { UserTaskEntity } from 'src/user-task/user-task.entity';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { UserTeamEntity } from './user-team.entity';
 
 @Entity({ name: 'user' })
 export class UserEntity {
@@ -18,4 +27,16 @@ export class UserEntity {
   @Exclude()
   @Column()
   password: string;
+
+  @OneToMany(() => UserTeamEntity, (userTeam) => userTeam.user, {
+    onDelete: 'CASCADE',
+  })
+  @JoinColumn()
+  teams: UserTeamEntity[];
+
+  @OneToMany(() => UserTaskEntity, (task) => task.user)
+  tasks: UserTaskEntity[];
+
+  @OneToMany(() => CommentEntity, (comment) => comment.user)
+  comments: CommentEntity[];
 }
